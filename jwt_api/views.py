@@ -1,37 +1,33 @@
 from django.shortcuts import render
-from rest_framework.views import APIView
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.serializers import 
+from rest_framework import serializers
 
-#from docs
-from rest_framework_simplejwt.serializers import TokenObtainPairViewSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+# Serializer for Register
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'email']
+        extra_kwargs = {'password': {'write_only': True}}
 
-from rest_framework_simplejwt.tokens import RefreshTokens
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password'],
+            email=validated_data['email']
+        )
+        return user
 
-class MyTokenObtainPairSerializer(TokenObtainPairViewSerializer):
-	@classmethod
-	def get_token(cls, user):
-		token = super().get_token(user)
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-		#Add custom claims
-		token['claims'] = user.name
-		return token
-
-class Home(APIView):
-	authentication_classes = [JWTAuthentication]
-	permission_classes = [IsAuthenticated]
-
-	def get(self, request):
-		content = {'message' : 'Hello World'}
-		return Response(content)
-
-def get_tokens_for_user(user):
-	refresh = RefreshToken.for_user(user)
-
-	return {
-		'refresh' : str(refresh),
-		'access' : str(refresh.access_token),
-	}
