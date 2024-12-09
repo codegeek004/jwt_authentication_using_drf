@@ -35,3 +35,10 @@ class LoginView(APIView):
                     })
             return Response({"error" : "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProtectedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"message" : "This is a protected view, you are protected"})
