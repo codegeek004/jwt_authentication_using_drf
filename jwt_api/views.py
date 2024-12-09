@@ -9,8 +9,9 @@ from django.http import HttpResponse
 from jwt_api.serializers import RegisterSerializer, LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
-
+class HomeView(APIView):
+    def get(self, request):
+        return Response({"message" : "Welcome to the JWT API"})
 
 class RegisterView(APIView):
     def post(self, request):
@@ -20,10 +21,9 @@ class RegisterView(APIView):
             return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class LoginView(APIView):
     def post(self, request):
-        serializer = LoginView(data=request.data)
+        serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = authenticate(username=serializer.validated_data['username'],
                                 password=serializer.validated_data['password'])
@@ -35,7 +35,6 @@ class LoginView(APIView):
                     })
             return Response({"error" : "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]
