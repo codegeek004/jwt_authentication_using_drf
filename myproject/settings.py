@@ -146,6 +146,7 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME" : timedelta(minutes=5),
     "RERESH_TOKEN_LIFETIME" : timedelta(days=1),
+    "TOKEN_OBTAIN_SERIALIZER": "my_app.serializers.MyTokenObtainPairSerializer",
 }
 
 
