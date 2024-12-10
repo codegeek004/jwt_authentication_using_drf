@@ -36,8 +36,36 @@ class LoginView(APIView):
             return Response({"error" : "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class SamlLoginView(APIView):
+    def get(self, request):
+        #this is where saml triggered you at login page
+        return Response({"message" : "Redirect to SAML Identity Provider for authentication"})
+
+class SamlACSView(APIView):
+    def post(self, request):
+        user_data = {
+            'username' : request.data.get('username'),
+            'first_name' : request.data.get('first_name'),
+            'last_name' : request.data.get('last_name')
+        }
+        user, created = User.objects.get_or_create(username=user_data['username'])
+               
+        user.first_name = user_data['first_name']
+        user.last_name = user_data['last_name']
+        user.save()
+
+        #Generate teh jwt token for this
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+
+        return Response({
+                'access' : access_token,
+                'refresh' : str(refresh)
+            })
+
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response({"message" : "This is a protected view, you are protected"})
+
