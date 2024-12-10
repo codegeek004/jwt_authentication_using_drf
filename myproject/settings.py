@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     #myapps
     'jwt_api',
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'djangos'
 ]
 
 MIDDLEWARE = [
@@ -148,6 +149,35 @@ SIMPLE_JWT = {
     "RERESH_TOKEN_LIFETIME" : timedelta(days=1),
 }
 
+#SAML configurations
+
+# SAML_SETTINGS = {
+#     'strict' : True,
+#     'debug' : False,
+#     'sp' : {
+#         'entityId' : 'http://127.0.0.1:8000/metadata',
+#         'assertionConsumerService' : {
+#             'url' : 'http://127.0.0.1:8000/saml/callback',
+#             'binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',          
+#             },
+#         'singleLogoutService' : {
+#             'url' : 'http://127.0.0.1:8000/saml/logout',
+#             'binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+#         },
+#         'NameIDFormat': 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
+#         'x509cert': '',
+#         'privateKey': '',
+#     },
+#     'idp' : 
+# }
+SAML_SETTINGS = {
+    'SP_ENTITY_ID': 'http://localhost:8000/sso/acs/',  #Service Provider URL
+    'ACS_URL': 'http://localhost:8000/sso/acs/',  #Assertion Consumer Service (ACS) URL
+    'IDP_ENTITY_ID': 'https://idp.example.com/saml',  #Identity Provider (IDP) URL
+    'IDP_SSO_URL': 'https://idp.example.com/sso',  #IdP SSO URL
+    'IDP_PUBLIC_CERT': '/path/to/idp-public-cert.pem',  #Path to the IdP public certificate
+    'SAML_METADATA_URL': 'https://idp.example.com/metadata',  #IdP metadata URL
+}
 
 
 
