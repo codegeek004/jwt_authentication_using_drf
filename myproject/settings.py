@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'jwt_api',
     'rest_framework',
     'rest_framework_simplejwt',
-    'djangos'
+    'djangosaml2'
 ]
 
 MIDDLEWARE = [
