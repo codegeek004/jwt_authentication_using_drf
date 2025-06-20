@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.views import View
 from onelogin.saml2.auth import OneLogin_Saml2_Auth
-from saml_settings
+#from saml_settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework import status
@@ -17,8 +17,10 @@ class HomeView(APIView):
         return Response({"message" : "Welcome to the JWT API"})
 
 class RegisterView(APIView):
+
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
+        print(serializer.fields)
         if serializer.is_valid():
             user = serializer.save()
             return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
@@ -71,4 +73,29 @@ class ProtectedView(APIView):
 
     def get(self, request):
         return Response({"message" : "This is a protected view, you are protected"})
+
+
+class TokenRefreshView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            refresh_token = request.args.get("refresh")
+            if not refresh_token:
+                return Response({"message" : "Refresh Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+            token = RefreshToken(refresh_token)
+            user_id = token['user_id']
+
+            user = User.objects.get(id=user_id)
+
+            if user.last_active and now() - user.last_active > timedelta(minutes=10):
+                return Response({"message" : "User was inactive for more than 5 minutes"}, status=status.HTTP_401_UNAUTHORIZED)
+
+            user.last_active = now()
+            user.save()
+            access_token = str(token.access_token)
+            return Response({"new access token" : access_token})
+
+        except Exception as e:
+            return Response({"message" : str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
