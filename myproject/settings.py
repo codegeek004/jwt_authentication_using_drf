@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -170,14 +170,18 @@ SIMPLE_JWT = {
 #     },
 #     'idp' : 
 # }
+
+
 SAML_SETTINGS = {
-    'SP_ENTITY_ID': 'http://localhost:8000/sso/acs/',  #Service Provider URL
-    'ACS_URL': 'http://localhost:8000/sso/acs/',  #Assertion Consumer Service (ACS) URL
-    'IDP_ENTITY_ID': 'https://idp.example.com/saml',  #Identity Provider (IDP) URL
-    'IDP_SSO_URL': 'https://idp.example.com/sso',  #IdP SSO URL
-    'IDP_PUBLIC_CERT': '/path/to/idp-public-cert.pem',  #Path to the IdP public certificate
-    'SAML_METADATA_URL': 'https://idp.example.com/metadata',  #IdP metadata URL
+    'SP_ENTITY_ID': 'http://localhost:8000/sso/acs/',  
+    'ACS_URL': 'http://localhost:8000/sso/acs/',  
+    'IDP_ENTITY_ID': 'https://idp.example.com/saml',  
+    'IDP_SSO_URL': 'https://idp.example.com/sso',  
+    'IDP_PUBLIC_CERT': '/path/to/idp-public-cert.pem',  
+    'SAML_METADATA_URL': 'https://idp.example.com/metadata',  
 }
+AUTH_USER_MODEL = "jwt_api.CustomUser"
+
 
 
 

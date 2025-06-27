@@ -8,6 +8,7 @@ urlpatterns = [
 	path('protected/', ProtectedView.as_view(), name="protected"),
 	path('sso/login/', SamlLoginView.as_view(), name='saml_login'),  # SAML login redirect
     path('sso/acs/', SamlACSView.as_view(), name='saml_acs'),  # SAML Assertion Consumer Service (ACS) endpoint
-	path('', HomeView.as_view(), name="home")
+	path('', HomeView.as_view(), name="home"),
+	path('token/refresh/', TokenRefreshView.as_view(), name="token_refresh")
 
 ]
